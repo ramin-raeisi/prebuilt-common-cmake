@@ -1,8 +1,8 @@
-function(verify_and_fetch_prebuilt_dependency dependency_name)
+macro(verify_and_fetch_prebuilt_dependency dependency_name)
   set(options)
   set(oneValueArgs BASE_URL)
   set(multiValueArgs)
-  cmake_parse_arguments(PARSE_ARGV 1 ARGUMENT "${options}" "${oneValueArgs}" "${multiValueArgs}")
+  cmake_parse_arguments(ARGUMENT "${options}" "${oneValueArgs}" "${multiValueArgs}")
 
   if (NOT ARGUMENT_BASE_URL)
     set(ARGUMENT_BASE_URL "https://github.com/ramin-raeisi/prebuilt-${dependency_name}.git")
@@ -25,6 +25,7 @@ function(verify_and_fetch_prebuilt_dependency dependency_name)
 		ERROR_QUIET
       )
   else()
+    message(STATUS "Resetting HEAD of ${dependency_name}...")
     execute_process(
         COMMAND cmd /c "git reset HEAD --hard"
 		WORKING_DIRECTORY ${EXTERNALS_DIR}/${dependency_name}
@@ -33,4 +34,4 @@ function(verify_and_fetch_prebuilt_dependency dependency_name)
       )
   endif()
   include(${EXTERNALS_DIR}/${dependency_name}/${dependency_name}.cmake)
-endfunction()
+endmacro()
