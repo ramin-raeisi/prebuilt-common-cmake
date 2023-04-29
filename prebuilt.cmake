@@ -1,8 +1,8 @@
 macro(verify_and_fetch_prebuilt_dependency dependency_name)
   set(options)
   set(oneValueArgs BASE_URL)
-  set(multiValueArgs)
-  cmake_parse_arguments(ARGUMENT "${options}" "${oneValueArgs}" "${multiValueArgs}")
+  set(multiValueArgs COMPONENTS)
+  cmake_parse_arguments(ARGUMENT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   if (NOT ARGUMENT_BASE_URL)
     set(ARGUMENT_BASE_URL "https://github.com/ramin-raeisi/prebuilt-${dependency_name}.git")
@@ -33,5 +33,12 @@ macro(verify_and_fetch_prebuilt_dependency dependency_name)
 		ERROR_QUIET
       )
   endif()
+  
   include(${EXTERNALS_DIR}/${dependency_name}/${dependency_name}.cmake)
+  
+  if(ARGUMENT_COMPONENTS)
+    if(NOT ARGUMENT_COMPONENTS STREQUAL "")
+	  cmake_language(CALL Azi${dependency_name} COMPONENTS ${ARGUMENT_COMPONENTS})
+	endif()
+  endif()
 endmacro()
